@@ -4,8 +4,8 @@ import App from '../shared/App'
 import { BrowserRouter } from 'react-router-dom'
 
 hydrate(
-	<BrowserRouter>
-		<App data={window.__INITIAL_DATA__}/>
-	</BrowserRouter>,
-	document.getElementById('app')
-)
+  <BrowserRouter>
+    <App />
+  </BrowserRouter>,
+  document.getElementById('app')
+);

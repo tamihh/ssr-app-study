@@ -23,6 +23,7 @@ var browserConfig = {
 
 var serverConfig = {
   entry: './src/server/index.js',
+  // Inform webpack that we are building a bundle got nodeJS, rather than for the browser
   target: 'node',
   externals: [nodeExternals()],
   output: {
@@ -32,7 +33,18 @@ var serverConfig = {
   },
   module: {
     rules: [
-      { test: /\.(js)$/, use: 'babel-loader' }
+      { 
+        test: /\.(js)$/, 
+        loader: 'babel-loader',
+        exclude: /node_modules/,
+        options: {
+          presets: [
+            'react',
+            'stage-0',
+            ['env', { targets: { browsers: ['last 2 versions'] } }]
+          ]
+        }
+      }
     ]
   },
   plugins: [
