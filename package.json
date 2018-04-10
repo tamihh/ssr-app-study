@@ -3,10 +3,10 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "webpack -w & nodemon server.js",
+    "dev": "npm-run-all --parallel dev:*",
     "dev:server": "nodemon --watch build --exec \"node build/bundle.js\"",
-    "dev:build:server" : "webpack --config webpack.server.js --watch",
-    "dev:build:client" : "webpack --config webpack.client.js",
+    "dev:build-server": "webpack --config webpack.server.js --watch",
+    "dev:build-client": "webpack --config webpack.client.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -14,9 +14,11 @@
   "description": "",
   "devDependencies": {
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "clean-webpack-plugin": "^0.1.19",
     "nodemon": "^1.12.5",
     "webpack": "^3.10.0",
-    "webpack-node-externals": "^1.6.0"
+    "webpack-node-externals": "^1.6.0",
+    "webpack-merge": "^4.1.2"
   },
   "dependencies": {
     "babel-cli": "^6.26.0",
@@ -30,6 +32,7 @@
     "cors": "^2.8.4",
     "express": "^4.16.2",
     "isomorphic-fetch": "^2.2.1",
+    "npm-run-all": "^4.1.2",
     "react": "^16.3.1",
     "react-dom": "^16.3.1",
     "react-router-dom": "^4.2.2",

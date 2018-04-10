@@ -28,7 +28,7 @@ app.get("*", (req, res, next) => {
       </StaticRouter>
     )
 
-    res.send(`
+    const html = `
       <!DOCTYPE html>
       <html>
         <head>
@@ -41,7 +41,9 @@ app.get("*", (req, res, next) => {
           <div id="app">${markup}</div>
         </body>
       </html>
-    `)
+    `
+    res.send(html);
+    
   }).catch(next)
 })
 

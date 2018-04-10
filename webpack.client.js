@@ -1,22 +1,24 @@
 var path = require('path')
 var webpack = require('webpack')
 var nodeExternals = require('webpack-node-externals')
+const CleanWebpackPlugin = require('clean-webpack-plugin');
+const merge = require('webpack-merge')
+const baseConfig = require('./webpack.base.js')
 
-module.exports = {
+const config = {
   entry: './src/browser/index.js',
   output: {
-    path: path.resolve(__dirname, 'public'),
     filename: 'bundle.js',
+    path: path.resolve(__dirname, 'public'),
     publicPath: '/'
-  },
-  module: {
-    rules: [
-      { test: /\.(js)$/, use: 'babel-loader' },
-    ]
-  },
+	},
+
   plugins: [
     new webpack.DefinePlugin({
-      __isBrowser__: "true"
-    })
+      __isBrowser__: "true",
+		}),
+		new CleanWebpackPlugin(['public'])
   ]
 }
+
+module.exports = merge(baseConfig, config);
