@@ -1,3 +1,4 @@
+import 'babel-polyfill'
 import express from "express"
 import cors from "cors"
 import React from "react"
@@ -6,6 +7,8 @@ import { StaticRouter, matchPath } from "react-router-dom"
 import serialize from "serialize-javascript"
 import App from '../shared/App'
 import routes from '../shared/routes'
+import createStore from '../shared/store'
+import { Provider } from 'react-redux'
 
 const app = express()
 
@@ -13,6 +16,8 @@ app.use(cors())
 app.use(express.static("public"))
 
 app.get("*", (req, res, next) => {
+  const store = createStore();
+
   const activeRoute = routes.find((route) => matchPath(req.url, route)) || {}
 
   const promise = activeRoute.fetchInitialData
@@ -23,9 +28,11 @@ app.get("*", (req, res, next) => {
     const context = { data }
 
     const markup = renderToString(
-      <StaticRouter location={req.url} context={context}>
-        <App />
-      </StaticRouter>
+      <Provider store={store}>
+        <StaticRouter location={req.url} context={context}>
+          <App />
+        </StaticRouter>
+      </Provider>
     )
 
     const html = `
