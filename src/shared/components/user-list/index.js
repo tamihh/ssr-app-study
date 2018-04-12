@@ -15,7 +15,7 @@ class UsersList extends Component {
 
 	render() {
 		return (
-			<div>here is a bug list of users
+			<div>here is a big list of users
 				<ul>{this.renderUsers()}</ul>
 			</div>
 		)
@@ -23,8 +23,15 @@ class UsersList extends Component {
 
 }
 
+function loadData(store) {
+  return store.dispatch(fetchUsers());
+}
+
 function mapStateToProps(state) {
 	return { users: state.users }
 }
 
-export default connect(mapStateToProps, { fetchUsers } )(UsersList)
+export default {
+  loadData,
+  component: connect(mapStateToProps, { fetchUsers })(UsersList)
+};

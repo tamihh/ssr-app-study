@@ -1,57 +1,27 @@
 import 'babel-polyfill'
 import express from "express"
-import cors from "cors"
-import React from "react"
-import { renderToString } from "react-dom/server"
-import { StaticRouter, matchPath } from "react-router-dom"
-import serialize from "serialize-javascript"
-import App from '../shared/App'
-import routes from '../shared/routes'
+import { matchRoutes } from 'react-router-config'
+import Routes from '../shared/routes'
+import renderer from '../shared/helpers/renderer'
 import createStore from '../shared/store'
-import { Provider } from 'react-redux'
 
 const app = express()
 
-app.use(cors())
 app.use(express.static("public"))
 
 app.get("*", (req, res, next) => {
   const store = createStore();
 
-  const activeRoute = routes.find((route) => matchPath(req.url, route)) || {}
+  const promises = matchRoutes(Routes, req.path).map(({ route }) => {
+    return route.loadData ? route.loadData(store) : null;
+  })
 
-  const promise = activeRoute.fetchInitialData
-    ? activeRoute.fetchInitialData(req.path)
-    : Promise.resolve()
+  Promise.all(promises).then(() => {
+    const context = {};
+    res.send(renderer(req, store, context));
+  })
 
-  promise.then((data) => {
-    const context = { data }
 
-    const markup = renderToString(
-      <Provider store={store}>
-        <StaticRouter location={req.url} context={context}>
-          <App />
-        </StaticRouter>
-      </Provider>
-    )
-
-    const html = `
-      <!DOCTYPE html>
-      <html>
-        <head>
-          <title>SSR with RR</title>
-          <script src="/bundle.js" defer></script>
-          <script>window.__INITIAL_DATA__ = ${serialize(data)}</script>
-        </head>
-
-        <body>
-          <div id="app">${markup}</div>
-        </body>
-      </html>
-    `
-    res.send(html);
-    
-  }).catch(next)
 })
 
 app.listen(3000, () => {
