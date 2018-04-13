@@ -10,7 +10,7 @@ export default (req, store, context) => {
 
   const content = renderToString(
     <Provider store={store}>
-      <StaticRouter location={req.path} context={{}}>
+      <StaticRouter location={req.path} context={context}>
         <div>{renderRoutes(Routes)}</div>
       </StaticRouter>
     </Provider>
@@ -22,7 +22,7 @@ export default (req, store, context) => {
         <head>
 					<title>SSR with RR</title>
 					<script src="/bundle.js" defer></script>
-					<script>window.__INITIAL_DATA__ = ${serialize(store.getState())}</script>
+					<script>window.__INITIAL_STATE__ = ${serialize(store.getState())}</script>
         </head>
 
         <body>

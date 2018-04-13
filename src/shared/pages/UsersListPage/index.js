@@ -5,6 +5,8 @@ import { fetchUsers } from '../../actions'
 class UsersList extends Component {
 	componentDidMount() {
 		this.props.fetchUsers();
+		console.log(this.props.fetchUsers)
+		console.log(fetchUsers)
 	}
 
 	renderUsers() {
@@ -17,18 +19,19 @@ class UsersList extends Component {
 		return (
 			<div>here is a big list of users
 				<ul>{this.renderUsers()}</ul>
+				<button onClick={() => this.props.fetchUsers()}>more user</button>
 			</div>
 		)
 	}
 
 }
 
-function loadData(store) {
-  return store.dispatch(fetchUsers());
+function loadData(dispatch) {
+  return dispatch(fetchUsers());
 }
 
 function mapStateToProps(state) {
-	return { users: state.users }
+	return { users: state.users.usersList }
 }
 
 export default {

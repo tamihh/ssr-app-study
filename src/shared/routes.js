@@ -1,24 +1,16 @@
-import Home from './Home'
-import Grid from './Grid'
-import UsersListPage from '../shared/components/user-list';
+import HomePage from './pages/HomePage'
+import UsersListPage from './pages/UsersListPage';
 import { fetchUsers } from '../shared/actions'
-
-import { fetchPopularRepos } from './api'
 
 const routes =  [
   {
+    ...HomePage,
     path: '/',
     exact: true,
-    component: Home,
   },
   {
     ...UsersListPage,
     path: '/users'
-  },
-  {
-    path: '/popular/:id',
-    component: Grid,
-    fetchInitialData: (path = '') => fetchPopularRepos(path.split('/').pop())
   },
 ]
 
