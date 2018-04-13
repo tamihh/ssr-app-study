@@ -1,16 +1,27 @@
 import 'babel-polyfill'
 import express from "express"
 import { matchRoutes } from 'react-router-config'
+import proxy from 'express-http-proxy'
 import Routes from '../shared/routes'
 import renderer from '../shared/helpers/renderer'
 import createStore from '../shared/store'
 
 const app = express()
 
+app.use(
+  '/api', 
+  proxy('http://react-ssr-api.herokuapp.com', {
+    proxyReqOptDecorator(opts) {
+      opts.headers['x-forwarded-host'] = 'localhost:3000';
+      return opts;
+    }
+  })
+)
+
 app.use(express.static("public"))
 
-app.get("*", (req, res, next) => {
-  const store = createStore();
+app.get("*", (req, res) => {
+  const store = createStore(req);
 
   const routes = matchRoutes(Routes, req.path).map(({ route }) => {
     return route.loadData ? route.loadData(store.dispatch) : null;
@@ -25,7 +36,7 @@ app.get("*", (req, res, next) => {
 })
 
 app.listen(3000, () => {
-  console.log(`Server is listening on port: 3000`)
+  console.log(`Server is listening on http://localhost:3000`)
 })
 
 /*

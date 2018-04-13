@@ -5,8 +5,6 @@ import { fetchUsers } from '../../actions'
 class UsersList extends Component {
 	componentDidMount() {
 		this.props.fetchUsers();
-		console.log(this.props.fetchUsers)
-		console.log(fetchUsers)
 	}
 
 	renderUsers() {
@@ -26,13 +24,14 @@ class UsersList extends Component {
 
 }
 
+function mapStateToProps(state) {
+	return { users: state.users.usersList }
+}
+
 function loadData(dispatch) {
   return dispatch(fetchUsers());
 }
 
-function mapStateToProps(state) {
-	return { users: state.users.usersList }
-}
 
 export default {
   loadData,
