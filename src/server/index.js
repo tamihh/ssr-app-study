@@ -23,13 +23,27 @@ app.use(express.static("public"))
 app.get("*", (req, res) => {
   const store = createStore(req);
 
-  const routes = matchRoutes(Routes, req.path).map(({ route }) => {
-    return route.loadData ? route.loadData(store.dispatch) : null;
-  })
+  const routes = matchRoutes(Routes, req.path)
+    .map(({ route }) => {
+      return route.loadData ? route.loadData(store.dispatch) : null;
+    })
+    .map(promise => {
+      if (promise) {
+        return new Promise((resolve, reject) => {
+          promise.then(resolve).catch(resolve);
+        });
+      }
+    });
+
 
   Promise.all(routes).then(() => {
     const context = {};
-    res.send(renderer(req, store, context));
+    const content = renderer(req, store, context);
+
+    if (context.notFound)
+      res.status(404);
+
+    res.send(content);
   })
 
 
